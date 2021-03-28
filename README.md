@@ -1,15 +1,28 @@
 ### 스프링 시큐리티 기본 API 및 Filter 이해
-#### 1) 프로젝트 구성 및 의존성 추가
+#### 2) 사용자 정의 보안 기능 구현
 
-* 스프링 시큐리티의 의존성 추가 시 일어나는 일들
-    * 서버가 기동되면 스프링 시큐리티의 초기화 작업 및 보안 설정이 이루어진다.(내가 하는것이 아닌 스프링시큐리티가 자동으로)
-    * 별도의 설정이나 구현을 하지 않아도 기본적인 웹 보안 기능이 현재 시스템에 연동되어 작동함
-        1. 모든 요청은 _인증_ 이 되어야 자원에 접근이 가능하다.
-        2. 인증 방식은 폼 로그인 방식과 httpBasic 로그인 방식을 제공한다.(현재 폼 로그인 방식)
-        3. 기본 로그인 페이지 제공한다.
-        4. 기본 계정 한개 제공한다 - username : user/password 랜덤 문자열
-    
-* 문제점
-    * 계정 추가,권한 추가,DB 연동 등(인증을 받아도 어떤 자원에는 특정한 권한이 있어야만 접급 가능하도록 만들어야된다.)
-    * 기본적인 보안 기능 외에 시스템에서 필요로 하는 더 세부적이고 추가적인 보안기능이 필요
-    
+* WebSecurityConfigurerAdapter 이 클래스는 웹보안 기능 초기화 하고 설정을 하는 클래스
+  이 클래스가 HttpSecurity 라는 클래스를 생성 HttpSecurity 이클래스는 세부적인 보안 기능을 설정할수 있는 api 제공
+  WebSecurityConfigurerAdapter,HttpSecurity 이 두개의 클래스가 웹보안 기능을 활성화 하고 보안 기능을 작동하게끔
+  하는 역할을 한다.
+  
+* @EnableWebSecurity 어노테이션 활성화 해야 웹보안 활성화 된다.
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
+}
+```
+##### 시큐리티 기본 user 생성과정
+* SecurityConfig 에서 별도의 설정을 하지 않는다면 application.properties 에서 읽어드려 계정을 생성하고 application.properties 에도 아무런 설정을 하지 않는다면  
+  스프링 시큐리티가 SecurityProperties 클래스에 기본적으로 생성되는 user 정보를 가지고 계정을 제공합니다.
+```properties
+spring.security.user.name=user
+spring.security.user.password=1111
+```
+
+![image](https://user-images.githubusercontent.com/40969203/112751906-53ce4880-900b-11eb-8ed6-50329d3d295e.png)
+
+
+
+  
