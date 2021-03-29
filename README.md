@@ -1,15 +1,13 @@
 ### 스프링 시큐리티 기본 API 및 Filter 이해
-#### 7) Remember Me 인증 필터 :RememberMeAuthenticationFilter
+#### 8) 익명사용자 인증 필터 : AnonymousAuthenticationFilter
 
-RememberMeAuthenticationFilter 사용되어지는 경우
-  - 인증객체가 없는 경우 
-  - 사용자가 Remember-me 쿠기를 가지고 있는 경우
+* 별도의 익명사용자용 인증 객체를 만든다.
+* 인증객체가 없으면 익명 인증객체 생성   
 
+SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+"anonymousUser" 문자열을 만든다.
 
-##### Remember 파라미터 를 전달해서 로그인 시도 하면 TokenBasedRememberMeServices.onLoginSuccess() 로 전달
+* AnonymousAuthenticationFilter는 현재 접속한 사용자가 인증을 받지 않았으면 익명사용자로 판단하여
+  익명사용자 토큰을 만들어서 인증된 사용자와 의 구분을 하기위한 용도
 
-1. 포스트맨으로 테스트시 jseeionId 는 지우고 Remember-me 만 쿠키 전달 해서 테스트
-2. 인증객체를 만들고 난뒤에는 form 로그인 방식과 유사하다.
-
-![image](https://user-images.githubusercontent.com/40969203/112840955-e558bb80-90da-11eb-9440-903d513738e7.png)
-![image](https://user-images.githubusercontent.com/40969203/112840996-ef7aba00-90da-11eb-81cd-b0b35cb9d8db.png)
+![image](https://user-images.githubusercontent.com/40969203/112844922-38cd0880-90df-11eb-95a0-48162b841bc3.png)
