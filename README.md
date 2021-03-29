@@ -1,10 +1,15 @@
 ### 스프링 시큐리티 기본 API 및 Filter 이해
-#### 6) Remember Me 인증
+#### 7) Remember Me 인증 필터 :RememberMeAuthenticationFilter
 
-* 서버가 Remember me 활성화 상태에서 실행하면 서버가 응답헤더에 Remember me 쿠키 응답해준다.
-* RememberMeAuthenticationFilter 에서 진행된다.
-* Remember me 쿠기값 추출해서 userid 패스워드 추출 해서 user 객체를 얻고
-  다시 인증객체를 다시 만들어서 리턴해준다.
+RememberMeAuthenticationFilter 사용되어지는 경우
+  - 인증객체가 없는 경우 
+  - 사용자가 Remember-me 쿠기를 가지고 있는 경우
 
-![image](https://user-images.githubusercontent.com/40969203/112835365-24cfd980-90d4-11eb-80b6-29362b51afdf.png)
-![image](https://user-images.githubusercontent.com/40969203/112835383-2a2d2400-90d4-11eb-9a90-22d2b3c121e8.png)
+
+##### Remember 파라미터 를 전달해서 로그인 시도 하면 TokenBasedRememberMeServices.onLoginSuccess() 로 전달
+
+1. 포스트맨으로 테스트시 jseeionId 는 지우고 Remember-me 만 쿠키 전달 해서 테스트
+2. 인증객체를 만들고 난뒤에는 form 로그인 방식과 유사하다.
+
+![image](https://user-images.githubusercontent.com/40969203/112840955-e558bb80-90da-11eb-9440-903d513738e7.png)
+![image](https://user-images.githubusercontent.com/40969203/112840996-ef7aba00-90da-11eb-81cd-b0b35cb9d8db.png)
