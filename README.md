@@ -1,5 +1,5 @@
 ### 스프링 시큐리티 기본 API 및 Filter 이해
-#### 10) 세션 제어 필터 SessionManagementFilter,ConcurrentSessionFilter
+#### 11) 세션 제어 필터 SessionManagementFilter,ConcurrentSessionFilter
 
 * user 1 이 로그인 하고 user2 가 같은계정으로 로그인했을때 일단 가정으로(맥스세션 1개고 세션만료 전략인경우)  
 user2 가 인증을 마친상태에서 user1 의 세션을 만료시킨다 하지만 현재 등록된 세션 카운트는 2개  
@@ -32,3 +32,6 @@ ConcurrentSessionFilter.doFilter()
 만료되었을 경우 로그아웃 처리
 
 ```
+![image](https://user-images.githubusercontent.com/40969203/112990680-4945b780-91a1-11eb-8874-03b8040c0a8b.png)
+![image](https://user-images.githubusercontent.com/40969203/112990701-4e0a6b80-91a1-11eb-88ae-c37017f4a402.png)
+
