@@ -1,32 +1,34 @@
 ### 스프링 시큐리티 기본 API 및 Filter 이해
-#### 9) 동시 세션 제어, 세션 고정 보호, 세션 정책
+#### 10) 세션 제어 필터 SessionManagementFilter,ConcurrentSessionFilter
 
-##### 동시 세션 제어
-1. 최대세션 허용개수 초과 했다고 가정 허용개수는 동일한 계정으로 생성되는 세션의 허용개수는 1개라고 가정
-2. 동일한 계정의 두번째 사용자가 접속할 경우 이전 사용자 세션 만료
-3. 동일한 계정의 두번째 사용자가 접속할 경우 현재 사용자 인증 실패 (인증 예외 발생)
-
-##### 세션 고정 보호
-1. 인증에 성공할때마다 세로운 세션 아이디 발급
-2. 테스트 시 .sessionFixation().none(); 으로 하고 브라우저 로그인 화면 까지만 접속후 세션아이디 취득
-3. 그 세션아이디로 포스트맨 으로 로그인 처리 요청 후 성공확인
-4. 브라우저 에서 루트 요청시 로그인 하지 않았는데도 로그인 성공
-
-##### 세션 정책
-1. sessionCreationPolicy(SessionCreationPolicy.STATELESS)  JWT 를 사용할때 사용
-
-##### Session 과 Authentication 차이점
-인증관련 관계도를 보면 이렇습니다.  
-_Session > SecurityContext > Authentication > UserDetials 입니다._  
-즉 사용자가 로그인 후 인증을 받게 되면 인증정보를 UserDetials 에 담고  
-UserDetials 는 Authentication 에 담고  
-Authentication 은 SecurityContext 에 담고  
-SecurityContect 는 Session 에 담는 식으로 처리 됩니다.
-
-![image](https://user-images.githubusercontent.com/40969203/112855473-cb72a500-90e9-11eb-817f-0e299333dc89.png)
-![image](https://user-images.githubusercontent.com/40969203/112855495-d0375900-90e9-11eb-96e9-c81728bc8822.png)
-![image](https://user-images.githubusercontent.com/40969203/112855511-d4fc0d00-90e9-11eb-869f-195659c3a533.png)
-![image](https://user-images.githubusercontent.com/40969203/112855572-e6ddb000-90e9-11eb-846c-be52dbed0279.png)
-![image](https://user-images.githubusercontent.com/40969203/112855604-ed6c2780-90e9-11eb-84a0-e745bd28ce77.png)
+* user 1 이 로그인 하고 user2 가 같은계정으로 로그인했을때 일단 가정으로(맥스세션 1개고 세션만료 전략인경우)  
+user2 가 인증을 마친상태에서 user1 의 세션을 만료시킨다 하지만 현재 등록된 세션 카운트는 2개  
+  user1 이 다시 접속했을때 세션만료 체크하고 만료가 되어서 로그아웃 처리 세션 레지스트리에는 계속 쌓인다. 만료 플래그가 true 로 되어있다.
 
 
+* user1 이 접속할때  
+```java
+ConcurrentSessionControlAuthenticationStrategy.allowableSessionsExceeded();
+현재 내 계정으로 인증된사용자가 있는지 확인하고 맥시멈세션 이랑 비교 세션만료전략 또는 로그인 막는 전략 에 따른 처리 를 한다.
+user1 은 처음 접속했기때문에 전부 통과되고 세션 레지스트리에 세션 저장 
+
+SessionRegistryImpl.class 
+private final Map<String, SessionInformation> sessionIds;
+세션 put 한다.이떄 key 값 sessionid
+
+```
+* uesr2 가 접속할때(같은계정으로)
+```java
+ConcurrentSessionControlAuthenticationStrategy.allowableSessionsExceeded();
+세션 만료 전략인 경우 에는 세션 만료 처리
+로그인을 막는 전략인 경우에는 예외를 던진다.
+
+```
+
+* user1 이 접속할때(세션만료 전략)
+```java
+ConcurrentSessionFilter.doFilter()
+에서 세션아이디로 레지스트리에 등록된 세션인포메이션을 꺼내온뒤 만료여부를 확인한다.
+만료되었을 경우 로그아웃 처리
+
+```

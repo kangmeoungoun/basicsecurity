@@ -30,10 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                ;
        http
                .sessionManagement()
-               .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-               .sessionFixation().changeSessionId();
-               //.maximumSessions(1)
-               //.maxSessionsPreventsLogin(false)
+               .maximumSessions(1)
+               .maxSessionsPreventsLogin(false)
+               ;
 
 
     }
