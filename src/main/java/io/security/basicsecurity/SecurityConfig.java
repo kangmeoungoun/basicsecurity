@@ -1,39 +1,36 @@
 package io.security.basicsecurity;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.logout.CompositeLogoutHandler;
-
-import javax.servlet.http.HttpSession;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private final  UserDetailsService userDetailsService;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
+        String password = "{noop}1111";
+        auth.inMemoryAuthentication().withUser("user").password(password).roles("USER");
+        auth.inMemoryAuthentication().withUser("sys").password(password).roles("SYS");
+        auth.inMemoryAuthentication().withUser("admin").password(password).roles("ADMIN","SYS","USER");
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception{
        http
                .authorizeRequests()
-               .anyRequest().authenticated()
-       ;
+               .antMatchers("/user").hasRole("USER")
+               .antMatchers("/admin/pay").hasRole("ADMIN")
+               .antMatchers("/admin/**").access("hasRole('ADMIN') or hasRole('SYS')")
+               .anyRequest().authenticated();
        http
                .formLogin()
                ;
-       http
-               .sessionManagement()
-               .maximumSessions(1)
-               .maxSessionsPreventsLogin(false)
-               ;
-
-
     }
 }
