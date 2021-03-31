@@ -1,30 +1,23 @@
-### 스프링 시큐리티 기본 API 및 Filter 이해
-#### 13) 사이트간 요청 위조 - CSRF, CsrfFilter
+### 스프링 시큐리티 주요 아키텍처 이해
+#### 1) 위임 필터 및 필터 빈 초기화 - DelegatingProxyChain, FilterChainProxy
 
-##### CSRF(Cross Site Request Forgery)
+* DelegatingProxy 서블릿 필터이기 때문에 가장먼저 요청받게 되고 그 요청을 스프링필터에게 전달한다.
+* SpringSecurityFilterChain 이름을 가진 빈이 FilterChainProxy 이다.
 
-* 공격방법
-```html
-<form action="http://facebook.com/api/content" method="post">
-    <input type="hidden" name="body" value="여기 가입하면 돈 10만원 드립니다." />
-    <input type="submit" value="Click Me"/>
-</form>
-사용자가 페이스북에 로그인이 된 상태에서 이 html 메일발송 사용자 클릭.
-```
 
-* 방어기법  
-1.Referrer 검증  
-2.Security Token 사용(CSRF Token)
-  (POST, PATCH, DELETE..  GET메소드는 제외)
-```java
+- 빈 등록되는 과정
+    - DelegatingFilterProxy 이 생성되고 SpringSecurityFilterChain 이름을가진 FilterChainProxy 찾는다.
+    
+    - SecurityFilterAutoConfiguration 여기서 DelegatingFilterProxy 필터를 등록한다. 
+    - DelegatingFilterProxy 생성자에 SpringSecurityFilterChain 이름 셋팅
+    - WebSecurityConfiguration springSecurityFilterChain 이 이으로 필터 빈 등록
+    - 이떄 이 빈이 FilterChainProxy 이다. WebSecurity 에서 FilterChainProxy 생성후 리턴해준다.
+    
+- 실행과정
+    - DelegatingFilterProxy 요청을 먼저 받고 SpringSecurityFilterChain 이름으로 등록된 Bean 을 리턴받아서 위임한다.
+    - 그 대상이 FilterChainProxy 이다.
 
-CsrfToken csrfToken = this.tokenRepository.loadToken(request);
-        boolean missingToken = csrfToken == null;
-        if (missingToken) {
-            csrfToken = this.tokenRepository.generateToken(request);
-            this.tokenRepository.saveToken(csrfToken, request, response);
-        }
 
-HttpSessionCsrfTokenRepository 구현체에서 토큰 정보를 가지고 온다 세션에서 가지고 온다.없으면 저장
-그다음에 파라미터 또는 헤더에서 csrf토큰 값이랑 같은지 비교 
-```  
+![image](https://user-images.githubusercontent.com/40969203/113156012-92b30700-9274-11eb-8248-265c5ff8f8e1.png)
+![image](https://user-images.githubusercontent.com/40969203/113156040-9777bb00-9274-11eb-830b-4a25c53db133.png)
+![image](https://user-images.githubusercontent.com/40969203/113156081-9f375f80-9274-11eb-9961-2fad64303aef.png)
