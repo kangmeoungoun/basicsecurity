@@ -1,5 +1,9 @@
 ### 스프링 시큐리티 주요 아키텍처 이해
-#### 9) 인가 개념 및 필터 이해 : Authorization, FilterSecurityInterceptor
-![image](https://user-images.githubusercontent.com/40969203/113479285-2846d480-94c9-11eb-8081-49eafec967a6.png)
-![image](https://user-images.githubusercontent.com/40969203/113479287-2da41f00-94c9-11eb-86c9-b478a8012f5e.png)
-![image](https://user-images.githubusercontent.com/40969203/113479302-398fe100-94c9-11eb-8447-c737a480fcb4.png)
+#### 10) 인가 결정 심의자 - AccessDecisionManager, AccessDecisionVoter
+
+#### AccessDecisionManager 역할
+1. 실질적으로 인가처리를 총괄하는 클래스
+   
+![image](https://user-images.githubusercontent.com/40969203/113479866-54b02000-94cc-11eb-8066-93d27253462f.png)
+![image](https://user-images.githubusercontent.com/40969203/113479873-5ed21e80-94cc-11eb-936b-38feed84cd8c.png)
+![image](https://user-images.githubusercontent.com/40969203/113479881-65609600-94cc-11eb-9521-4d933e0554ff.png)
