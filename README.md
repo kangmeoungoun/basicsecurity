@@ -1,14 +1,20 @@
 ### 스프링 시큐리티 주요 아키텍처 이해
-#### 4) 인증저장소 - SecurityContextHolder, SecurityContext
+#### 5) 인증 저장소 필터 - SecurityContextPersistenceFilter
 
-* SecurityContext 세션에도 저장이 된다. 인증된 사용자가 인증 이후에 사이트 접속할때는
-실제로 세션에 저장된 SecurityContext 객체를 가지고 와서 그 객체를 ThreadLocal 에 저장 하는 식으로 처리가 되고 있다.
-  
-
-* 자식 쓰레드까지 전파해서 공유
+* SecurityContextPersistenceFilter 최종 응답시 
 ```java
-SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+SecurityContextHolder.clearContext()
+SecurityContext를 삭제한다 매 요청 후에 삭제
+SecurityContextHolder 안에 매요청마다 SecurityContext를 저장 하기때문에
 ```
-
-![image](https://user-images.githubusercontent.com/40969203/113466816-8ea40680-9479-11eb-9778-88604ed9332b.png)
-![image](https://user-images.githubusercontent.com/40969203/113466819-9a8fc880-9479-11eb-89cd-4dd68fd313a5.png)
+* SecurityContextPersistenceFilter 역할
+```
+익명사용자나 인증시에는 SecurityContextHolder 안에 새루운 SecurityContext를 저장
+인증후에는 세션에서 SecurityContext를 꺼내어 SecurityContextHolder에 저장
+그후 SecurityContext는 TrheadLocal 에 저장되 어 있어서 
+SecurityContextHolder.getContext() 에 바로 참조 가능.
+```
+![image](https://user-images.githubusercontent.com/40969203/113468441-34a73f00-9481-11eb-935b-6ecc3e7408f5.png)
+![image](https://user-images.githubusercontent.com/40969203/113468446-3a048980-9481-11eb-8679-8ee34b6b63d7.png)
+![image](https://user-images.githubusercontent.com/40969203/113468450-44bf1e80-9481-11eb-85ec-d1b3bb378eae.png)
+![image](https://user-images.githubusercontent.com/40969203/113468472-6b7d5500-9481-11eb-9122-4fb3f6008ca4.png)
