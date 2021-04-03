@@ -5,7 +5,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -18,6 +17,11 @@ public class SecurityController{
         SecurityContext contxt = (SecurityContext)session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
         Authentication authentication1 = contxt.getAuthentication();
         return "home";
+    }
+
+    @GetMapping("/user")
+    public String user(){
+        return "user";
     }
 
     @GetMapping("/thread")
