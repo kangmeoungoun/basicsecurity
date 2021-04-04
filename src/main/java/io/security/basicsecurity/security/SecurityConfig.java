@@ -58,11 +58,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .loginPage("/login")
                 .loginProcessingUrl("/login_proc")
                 .defaultSuccessUrl("/")
-                .permitAll();
+                .permitAll()
 
-
-
-
+        ;
 
     }
     @Bean
