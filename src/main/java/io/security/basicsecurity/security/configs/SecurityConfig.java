@@ -1,4 +1,4 @@
-package io.security.basicsecurity.security;
+package io.security.basicsecurity.security.configs;
 
 import io.security.basicsecurity.security.filter.AjaxLoginProcessingFilter;
 import io.security.basicsecurity.security.handler.CustomAccessDeniedHandler;
@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     private final UserDetailsService userDetailsService;
@@ -83,14 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .permitAll()
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler())
-
-                .and()
-                .addFilterBefore(ajaxLoginProcessingFilter() , UsernamePasswordAuthenticationFilter.class);
-
-        http.csrf().disable();
-
-
+                .accessDeniedHandler(accessDeniedHandler());
 
     }
 
@@ -105,10 +100,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
-    @Bean
-    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception{
-        AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-        return ajaxLoginProcessingFilter;
-    }
+
 }
