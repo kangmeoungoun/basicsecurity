@@ -1,20 +1,20 @@
 package io.security.basicsecurity.security.common;
 
-import lombok.Getter;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Getter
-public class FormWebAuthenticationDetails extends WebAuthenticationDetails{
+public class FormWebAuthenticationDetails extends WebAuthenticationDetails {
 
-    private String secretKey;
+    private  String secretKey;
 
-    public FormWebAuthenticationDetails(HttpServletRequest request){
+    public FormWebAuthenticationDetails(HttpServletRequest request) {
         super(request);
-        this.secretKey = request.getParameter("secret_key");
+        secretKey = request.getParameter("secret_key");
     }
 
+    public String getSecretKey() {
 
-
+        return secretKey;
+    }
 }
