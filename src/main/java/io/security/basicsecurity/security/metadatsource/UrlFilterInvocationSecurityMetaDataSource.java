@@ -1,4 +1,4 @@
-package io.security.basicsecurity.security.metadatasource;
+package io.security.basicsecurity.security.metadatsource;
 
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
@@ -10,43 +10,36 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-public class UrlFilterInvocationSecurityMetadatsSource implements FilterInvocationSecurityMetadataSource {
-
+public class UrlFilterInvocationSecurityMetaDataSource implements FilterInvocationSecurityMetadataSource{
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap = new LinkedHashMap<>();
 
+
     @Override
-    public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
+    public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException{
 
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
-
-        requestMap.put(new AntPathRequestMatcher("/mypage"), Arrays.asList(new SecurityConfig("ROLE_USER")));
-
-        if(requestMap != null){
-            for(Map.Entry<RequestMatcher, List<ConfigAttribute>> entry : requestMap.entrySet()){
+        requestMap.put(new AntPathRequestMatcher("/mypage") , Arrays.asList(new SecurityConfig("ROLE_USER")));
+        if(requestMap !=null){
+            for (Map.Entry<RequestMatcher, List<ConfigAttribute>> entry : requestMap.entrySet()) {
                 RequestMatcher matcher = entry.getKey();
-                if(matcher.matches(request)){
+                if (matcher.matches(request)) {
                     return entry.getValue();
                 }
             }
-        }
 
+        }
         return null;
     }
 
     @Override
-    public Collection<ConfigAttribute> getAllConfigAttributes() {
+    public Collection<ConfigAttribute> getAllConfigAttributes(){
         Set<ConfigAttribute> allAttributes = new HashSet<>();
-
-        for (Map.Entry<RequestMatcher, List<ConfigAttribute>> entry : requestMap
-                .entrySet()) {
-            allAttributes.addAll(entry.getValue());
-        }
-
+        this.requestMap.values().forEach(allAttributes :: addAll);
         return allAttributes;
     }
 
     @Override
-    public boolean supports(Class<?> clazz) {
+    public boolean supports(Class<?> clazz){
         return FilterInvocation.class.isAssignableFrom(clazz);
     }
 }
