@@ -1,6 +1,6 @@
 ### 실전프로젝트 - 인가 프로세스 DB 연동 웹 계층 구현
-#### 05) 웹 기반 인가처리 DB연동 - 
-    FilterInvocationSecurityMetadataSource(2)
+#### 06) 웹 기반 인가처리 실시간 반영하기
+
 
 
 

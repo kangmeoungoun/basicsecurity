@@ -15,6 +15,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class FormAccessDeniedHandler implements AccessDeniedHandler {
@@ -33,7 +36,10 @@ public class FormAccessDeniedHandler implements AccessDeniedHandler {
 			response.getWriter().write(this.mapper.writeValueAsString(ResponseEntity.status(HttpStatus.FORBIDDEN)));
 
 		} else {
-			String deniedUrl = errorPage + "?exception=" + accessDeniedException.getMessage();
+			String exception = accessDeniedException.getMessage();
+			String encode = URLEncoder.encode(exception , StandardCharsets.UTF_8);
+			String deniedUrl = errorPage + "?exception=" + encode;
+
 			redirectStrategy.sendRedirect(request, response, deniedUrl);
 		}
 	}
